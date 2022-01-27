@@ -28,6 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -51,9 +52,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   const CircleAvatar(
                     radius: 54,
-                    backgroundColor: Colors.red,
-                    backgroundImage: NetworkImage( // imagem não está carregando!
-                      'https://i.stack.imgur.com/l60Hf.png'),                          
+                    // backgroundColor: Colors.red,
+                    backgroundImage: AssetImage('assets/img/user/user.png'),                                             
                   ),                
                   Positioned(
                     bottom: -10,
