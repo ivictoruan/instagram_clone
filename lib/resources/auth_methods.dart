@@ -1,3 +1,5 @@
+// import 'dart:typed_data';
+
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,14 +16,14 @@ class AuthMethods{
     required String password,
     required String username,
     required String bio,
-    // required Uint8List profileImage, // file
+    required Uint8List file,    
   }) async{
       String res = "Some error occurred ";            
     try {
-      if(email.isNotEmpty || password.isNotEmpty || username.isNotEmpty || bio.isNotEmpty ){
+      if(email.isNotEmpty || password.isNotEmpty || username.isNotEmpty || bio.isNotEmpty|| file!= null){
       //register user (firebase)
       UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      // print(cred.user!.uid); NÃO ESTÁ RODANDO
+      print(cred.user!.uid);
 
       // add user to our database
       await _firestore.collection("users").doc(cred.user!.uid).set({
