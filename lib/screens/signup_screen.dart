@@ -9,7 +9,7 @@ import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({ Key? key }) : super(key: key);
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,30 +29,33 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _bioController.dispose();
-    _usernameController.dispose();     
+    _usernameController.dispose();
   }
 
-  void selectImage() async{
+  void selectImage() async {
     Uint8List im = await pickImage(ImageSource.gallery);
     setState(() {
       _image = im;
-    });    
+    });
   }
 
   void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
     String res = await AuthMethods().signUpUser(
-      email: _emailController.text,
-      password:_passwordController.text,
-      username: _usernameController.text,
-      bio: _bioController.text,
-      file: _image!
-    );
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+    setState(() {
+      _isLoading = false;
+    });
     if (res != "success") {
       showSnackBar(res, context);
-    } 
+    }
   }
-                 
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,142 +68,120 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Flexible(
-                child: Container(), 
-                flex: 2
-              ),
+              Flexible(child: Container(), flex: 2),
               SvgPicture.asset(
                 'assets/ic_instagram.svg',
                 color: primaryColor,
                 height: 64,
               ),
-              const SizedBox(
-                height: 64.0
-              ),
+              const SizedBox(height: 64.0),
               Stack(
                 children: [
                   _image != null
-                  ? CircleAvatar(
-                    radius: 54,
-                    backgroundColor: Colors.red,
-                    backgroundImage: MemoryImage(_image!)
-                    )
-                  : const CircleAvatar(
-                    radius: 54,
-                    backgroundColor: Colors.red,
-                    backgroundImage: AssetImage(
-                      'assets/img/user/user.png'
-                      ),
-                    ),                                  
+                      ? CircleAvatar(
+                          radius: 54,
+                          backgroundColor: Colors.red,
+                          backgroundImage: MemoryImage(_image!))
+                      : const CircleAvatar(
+                          radius: 54,
+                          backgroundColor: Colors.red,
+                          backgroundImage:
+                              AssetImage('assets/img/user/user.png'),
+                        ),
                   Positioned(
                     bottom: -10,
                     left: 67,
                     child: IconButton(
                       onPressed: selectImage,
-                     icon: const Icon(Icons.add_a_photo,),
+                      icon: const Icon(
+                        Icons.add_a_photo,
+                      ),
                     ),
                   )
                 ],
               ),
-              const SizedBox(
-                height: 24.0
-              ),
+              const SizedBox(height: 24.0),
               // textfieldinput para username
               TextFieldInput(
                 textEditingcontroller: _usernameController,
                 hintText: 'Nome de usuário',
                 keyboardType: TextInputType.text,
-                isPass: false,                                              
+                isPass: false,
               ),
-              const SizedBox(
-                height: 24.0
-              ),
+              const SizedBox(height: 24.0),
               // textfieldinput para email
               TextFieldInput(
                 textEditingcontroller: _emailController,
                 hintText: 'Entre com seu email',
-                keyboardType: TextInputType.emailAddress,               
-                isPass: false,                               
+                keyboardType: TextInputType.emailAddress,
+                isPass: false,
               ),
-              const SizedBox(
-                height: 24.0
-                ),
+              const SizedBox(height: 24.0),
               // textfieldinput para senha
               TextFieldInput(
                 textEditingcontroller: _passwordController,
                 hintText: 'Crie sua senha',
                 keyboardType: TextInputType.text,
-                isPass: true,                                              
+                isPass: true,
               ),
-              const SizedBox(
-                height: 24.0
-              ),
+              const SizedBox(height: 24.0),
               // textfieldinput para email
               TextFieldInput(
                 textEditingcontroller: _bioController,
                 hintText: 'Escreva sua biografia',
                 keyboardType: TextInputType.text,
-                isPass: false,                                              
+                isPass: false,
               ),
-              const SizedBox(
-                height: 24.0
-              ),              
+              const SizedBox(height: 24.0),
               // inkwell para criar conta
               InkWell(
-                onTap: signUpUser,                
-                child: Container(
-                  child: const Text("Registrar"),
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4.0)
+                onTap: signUpUser,
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : Container(
+                        child: const Text("Registrar"),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        decoration: const ShapeDecoration(
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
+                          ),
+                          color: blueColor,
+                        ),
                       ),
-                    ),
-                    color: blueColor,
-                  ),              
-                ),
               ),
-              const SizedBox(
-                  height: 12.0
-              ),
-              Flexible(
-                child: Container(),
-                 flex: 2
-              ),
+              const SizedBox(height: 12.0),
+              Flexible(child: Container(), flex: 2),
               // linha para logar se houver conta
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     child: const Text("Já tem uma conta?"),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                   ),
                   GestureDetector(
-                    onTap: () {},  
-                    child: Container(                                      
+                    onTap: () {},
+                    child: Container(
                       child: const Text(
                         " Entre.",
                         style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(
                         vertical: 8.0,
                       ),
-                      
                     ),
                   )
                 ],
               ),
             ],
           ),
-          ),
         ),
-      );
+      ),
+    );
   }
 }
