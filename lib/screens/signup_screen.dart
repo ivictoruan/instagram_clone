@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+
   @override
   void dispose() {
     super.dispose();
@@ -34,10 +35,23 @@ class _SignupScreenState extends State<SignupScreen> {
     Uint8List im = await pickImage(ImageSource.gallery);
     setState(() {
       _image = im;
-    });
-    
-
+    });    
   }
+
+  void signUpUser() async {
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password:_passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!
+    );
+    if (res != "success") {
+      showSnackBar(res, context);
+    } 
+  }
+                 
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,18 +144,9 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(
                 height: 24.0
               ),              
-              // inkwell para registrar (botão)
+              // inkwell para criar conta
               InkWell(
-                onTap: () async {                  
-                  String res =  await AuthMethods().signUpUser(
-                    email: _emailController.text,                     
-                    password: _passwordController.text,
-                    username: _usernameController.text, 
-                    bio: _bioController.text, 
-                    file: _image!
-                  );
-                  debugPrint(res); 
-                },
+                onTap: signUpUser,                
                 child: Container(
                   child: const Text("Registrar"),
                   width: double.infinity,
