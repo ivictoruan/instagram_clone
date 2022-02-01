@@ -4,9 +4,10 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:instagram_clone/resources/storage_methods.dart';
 
-
-class AuthMethods{
+class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -16,27 +17,35 @@ class AuthMethods{
     required String password,
     required String username,
     required String bio,
-    required Uint8List file,    
-  }) async{
-      String res = "Some error occurred ";            
+    required Uint8List file,
+  }) async {
+    String res = "Some error occurred ";
     try {
-      if(email.isNotEmpty || password.isNotEmpty || username.isNotEmpty || bio.isNotEmpty|| file!= null){
-      //register user (firebase)
-      UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      print(cred.user!.uid);
+      if (email.isNotEmpty ||
+          password.isNotEmpty ||
+          username.isNotEmpty ||
+          bio.isNotEmpty) {
+        //register user (firebase)
+        UserCredential cred = await _auth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        debugPrint(cred.user!.uid);
 
-      // add user to our database
-      await _firestore.collection("users").doc(cred.user!.uid).set({
-        "username": username,
-        "uid": cred.user!.uid,
-        "email": email,
-        "bio": bio,
-        "followers": [],
-        "following": [],
-      });
-      res = "success!";
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage("ProfilePics", file, false);
+
+        // add user to our database
+        await _firestore.collection("users").doc(cred.user!.uid).set({
+          "username": username,
+          "uid": cred.user!.uid,
+          "email": email,
+          "bio": bio,
+          "followers": [],
+          "following": [],
+          "photoUrl": photoUrl,
+        });
+        res = "success!";
       }
-    } catch(err){      
+    } catch (err) {
       err.toString();
     }
     return res;
