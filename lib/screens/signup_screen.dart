@@ -20,8 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  Uint8List? _image = const AssetImage('assets/img/user/user.png') as Uint8List?;
-
+  Uint8List? _image;
   @override
   void dispose() {
     super.dispose();
