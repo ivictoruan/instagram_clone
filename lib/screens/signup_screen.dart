@@ -20,7 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  Uint8List? _image;
+  Uint8List? _image = const AssetImage('assets/img/user/user.png') as Uint8List?;
 
   @override
   void dispose() {
@@ -141,7 +141,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     bio: _bioController.text, 
                     file: _image!
                   );
-                  print("$res"); 
+                  debugPrint(res); 
                 },
                 child: Container(
                   child: const Text("Registrar"),
