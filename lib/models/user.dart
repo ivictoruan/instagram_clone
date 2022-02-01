@@ -15,5 +15,15 @@ class User {
     required this.photoUrl,
     required this.followers,
     required this.following,
-  }); 
+  });
+  
+  Map<String, dynamic> toJson() => { // converte informações do usuário para um objeto Json
+      'email': email,
+      'username': username,
+      'bio': bio,
+      'uid': uid,
+      'photoUrl': photoUrl,
+      'followers': followers,
+      'following': following,
+    };
 }
