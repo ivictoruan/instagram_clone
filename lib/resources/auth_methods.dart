@@ -14,10 +14,10 @@ class AuthMethods {
   // sign up user
   Future<String> signUpUser({
     required String email,
-    required String password,
     required String username,
-    required String bio,
+    required String password,
     required Uint8List file,
+    required String bio,
   }) async {
     String res = "Some error occurred ";
     try {
