@@ -19,7 +19,7 @@ class AuthMethods {
     required Uint8List file,
     required String bio,
   }) async {
-    String res = "Some error occurred ";
+    String res = "Aconteceu algum erro!";
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -46,7 +46,7 @@ class AuthMethods {
         res = "success!";
       }
     } catch (err) {
-      err.toString();
+      res = err.toString();
     }
     return res;
   }

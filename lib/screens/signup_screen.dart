@@ -52,7 +52,7 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = false;
     });
-    if (res != "success") {
+    if (res != "success!") {
       showSnackBar(res, context);
     }
   }
@@ -137,7 +137,8 @@ class _SignupScreenState extends State<SignupScreen> {
               InkWell(
                 onTap: signUpUser,
                 child: _isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(
+                        child: CircularProgressIndicator(color: primaryColor))
                     : Container(
                         child: const Text("Registrar"),
                         width: double.infinity,
