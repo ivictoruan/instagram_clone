@@ -37,14 +37,15 @@ class _AddNewPostScreenState extends State<AddNewPostScreen> {
         setState(() {
           _isLoading = false;
         });
-        showSnackBar("Postado!", context);
+        showSnackBar("Publicado!", context);
+        clearImage(); // para que volte ao estado de postagem depois de postar
       } else {
-        setState(() {
-          _isLoading = false;
-        });
         showSnackBar(res, context);
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       showSnackBar(e.toString(), context);
     }
   }
@@ -89,6 +90,11 @@ class _AddNewPostScreenState extends State<AddNewPostScreen> {
           );
         });
   }
+  void clearImage(){
+    setState(() {
+      _file = null;
+    });
+  }
 
   @override
   void dispose() {
@@ -98,9 +104,9 @@ class _AddNewPostScreenState extends State<AddNewPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final User user = Provider.of<UserProvider>(context).getUser; // carregando user
-    return _file == null
+    final User user =
+        Provider.of<UserProvider>(context).getUser; // carregando user
+    return _file == null // se n houver foto
         ? Center(
             child: IconButton(
               icon: const Icon(Icons.upload),
@@ -112,14 +118,14 @@ class _AddNewPostScreenState extends State<AddNewPostScreen> {
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () =>
-                    postImage(user.uid, user.username, user.photoUrl),
+                onPressed: clearImage,
               ),
               title: const Text("Postar"),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      postImage(user.uid, user.username, user.photoUrl),
                   child: const Text(
                     "Post",
                     style: TextStyle(
@@ -133,7 +139,12 @@ class _AddNewPostScreenState extends State<AddNewPostScreen> {
             ),
             body: Column(
               children: [
-                _isLoading ? const LinearProgressIndicator() : Container(),
+                _isLoading
+                    ? const LinearProgressIndicator(color: Colors.blue)
+                    : const Padding(
+                        padding: EdgeInsets.only(top: 0),
+                      ),
+                const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
