@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:intl/intl.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key? key}) : super(key: key);
+  final snap;
+  const PostCard({
+    Key? key,
+    required this.snap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,8 @@ class PostCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                      "https://images.unsplash.com/photo-1643779374659-70a427607bf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60"),
+                    snap["profImage"],
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -36,7 +42,7 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "username",
+                          snap["username"],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -84,7 +90,7 @@ class PostCard extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.35,
             width: double.infinity,
             child: Image.network(
-              "https://images.unsplash.com/photo-1643935042610-1a2a9dd4ada2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
+              snap["postUrl"],
               fit: BoxFit.cover,
             ),
           ),
@@ -137,13 +143,13 @@ class PostCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                   child: Text(
-                    "1,231 likes",
+                    "${snap["likes"].length} likes",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 8,
                   ),
                   child: RichText(
@@ -151,20 +157,20 @@ class PostCard extends StatelessWidget {
                       style: const TextStyle(color: primaryColor),
                       children: [
                         TextSpan(
-                          text: "username",
+                          text: snap["username"],
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
-                          text: " This is a exemple of comment!",
+                          text: " ${snap["description"]}",
                         ),
                       ],
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: (){},
+                  onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,
@@ -179,17 +185,19 @@ class PostCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                    ),
-                    child: Text(
-                      "04/02/2022",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: secondaryColor,
-                      ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    DateFormat.yMMMd().format(
+                      snap["datePublished"].toDate(),
+                    ), // mudar para pt_Br ou ddMMYYYY
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: secondaryColor,
                     ),
                   ),
+                ),
               ],
             ),
           ),
