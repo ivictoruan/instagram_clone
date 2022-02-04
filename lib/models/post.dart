@@ -23,7 +23,7 @@ class Post {
   });
 
   Map<String, dynamic> toJson() => { // converte informações do usuário para um objeto Json
-    'decription': description,
+    'description': description,
     'username': username,
     'postId': postId,
     'uid': uid,
