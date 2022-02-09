@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/resources/firestore_methods.dart';
+import 'package:instagram_clone/screens/comments_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
+
     return Container(
       color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(
@@ -169,7 +171,13 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CommentsScreen(),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.comment,
                 ),
@@ -239,9 +247,9 @@ class _PostCardState extends State<PostCard> {
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,
                     ),
-                    child: Text(
+                    child: const Text(
                       "View all 200 comments",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         color: secondaryColor,
                       ),
