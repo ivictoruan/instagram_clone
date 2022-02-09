@@ -44,18 +44,51 @@ class FirestoreMethods {
   }
 
   Future<void> likePost(String postId, String uid, List likes) async {
-    try{
-      if(likes.contains(uid)){
+    try {
+      if (likes.contains(uid)) {
         await _firestore.collection("posts").doc(postId).update({
-          "likes": FieldValue.arrayRemove([uid]), // atualiza removendo se já foi curtido
+          "likes": FieldValue.arrayRemove(
+              [uid]), // atualiza removendo se já foi curtido
         });
-      }else {
+      } else {
         await _firestore.collection("posts").doc(postId).update({
-          "likes": FieldValue.arrayUnion([uid]), // atualiza adicionando se não foi curtido
-      });
+          "likes": FieldValue.arrayUnion(
+              [uid]), // atualiza adicionando se não foi curtido
+        });
       }
-    } catch(e){
-      debugPrint(e.toString(),);
+    } catch (e) {
+      debugPrint(
+        e.toString(),
+      );
+    }
+  }
+
+  Future<void> postComment(String postId, String text, String uid, String name,
+      String profilePic) async {
+    try {
+      if (text.isNotEmpty) {
+        String commentId =
+            const Uuid().v1(); // gerando id (aleatório) para o comentário
+        await _firestore
+            .collection("posts")
+            .doc(postId)
+            .collection("comments")
+            .doc(commentId)
+            .set({
+          "profilePic": profilePic,
+          "name": name,
+          "uid": uid,
+          "text": text,
+          "commentId": commentId,
+          "datePublished": DateTime.now(),
+        });
+      } else {
+        debugPrint("Text is empty!");
+      }
+    } catch (e) {
+      debugPrint(
+        e.toString(),
+      );
     }
   }
 }
