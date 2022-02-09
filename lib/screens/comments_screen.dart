@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
@@ -18,7 +19,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   final TextEditingController _commentController = TextEditingController();
 
   @override
-  void dispose() {    
+  void dispose() {
     super.dispose();
     _commentController.dispose();
   }
@@ -33,7 +34,28 @@ class _CommentsScreenState extends State<CommentsScreen> {
         centerTitle: false,
         backgroundColor: mobileBackgroundColor,
       ),
-      body: CommentCard(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("posts")
+            .doc(widget.snap["postId"])
+            .collection("comments")
+            .orderBy("datePublished", descending: true)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) => CommentCard(
+              snap: snapshot.data!.docs[index],
+            ),
+          );
+        },
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           height: kToolbarHeight,
@@ -69,11 +91,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
               InkWell(
                 onTap: () async {
                   await FirestoreMethods().postComment(
-                      widget.snap["postId"],
-                      _commentController.text,
-                      user.uid,
-                      user.username,
-                      user.photoUrl);
+                    widget.snap["postId"],
+                    _commentController.text,
+                    user.uid,
+                    user.username,
+                    user.photoUrl,
+                  );
+                  setState(() {
+                    _commentController.text = "";
+                  });
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
