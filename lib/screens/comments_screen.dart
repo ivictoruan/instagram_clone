@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/user.dart';
+import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/comment_card.dart';
+import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({Key? key}) : super(key: key);
@@ -12,6 +15,8 @@ class CommentsScreen extends StatefulWidget {
 class _CommentsScreenState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<UserProvider>(context).getUser;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Comentários"),
@@ -33,7 +38,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
             children: [
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  "https://images.unsplash.com/photo-1644241937671-ee6c92b5ee2f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                  user.photoUrl,
                 ),
                 radius: 18,
               ),
@@ -45,14 +50,13 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: " Comentar como \$username",
-                      border: InputBorder.none
-                    ),
+                        hintText: " Comentar como ${user.username}",
+                        border: InputBorder.none),
                   ),
                 ),
               ),
               InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
@@ -66,7 +70,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
