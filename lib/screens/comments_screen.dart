@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
+import 'package:instagram_clone/resources/firestore_methods.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/widgets/comment_card.dart';
 import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
-  const CommentsScreen({Key? key}) : super(key: key);
+  final snap;
+  const CommentsScreen({Key? key, required this.snap}) : super(key: key);
 
   @override
   _CommentsScreenState createState() => _CommentsScreenState();
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void dispose() {    
+    super.dispose();
+    _commentController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
@@ -49,6 +59,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     right: 8,
                   ),
                   child: TextField(
+                    controller: _commentController,
                     decoration: InputDecoration(
                         hintText: " Comentar como ${user.username}",
                         border: InputBorder.none),
@@ -56,7 +67,14 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () async {
+                  await FirestoreMethods().postComment(
+                      widget.snap["postId"],
+                      _commentController.text,
+                      user.uid,
+                      user.username,
+                      user.photoUrl);
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
